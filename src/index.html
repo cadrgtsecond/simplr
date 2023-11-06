@@ -1,0 +1,29 @@
+{% template index.html () () %}
+<!doctype HTML>
+<html>
+  <head>
+    <title>Simplr.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/static/index.css"/>
+    <script src="/static/index.js" defer></script>
+  </head>
+  <body>
+    <h1>Simplr.</h1>
+    <form class="stack-form">
+      <p class="marginless">What are you building?</p>
+
+      <label><input type="checkbox" name="app_web" js-expandnext/>A Web App</label>
+      <fieldset>
+        <legend>Is it a?</legend>
+        <label><input type="checkbox" name="app_web_frontend">Frontend app</label>
+        <label><input type="checkbox" name="app_web_backend">Backend app</label>
+      </fieldset>
+
+      <label><input type="checkbox" name="app_mobile"/>A Mobile App</label>
+      <label><input type="checkbox" name="app_native"/>A Native App</label>
+      <br/>
+      <label>Describe your stack: <input name="stack"/></label>
+    </form>
+  </body>
+</html>
+{% end %}

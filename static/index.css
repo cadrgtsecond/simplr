@@ -1,0 +1,17 @@
+body {
+ --primary-background: color-mix(in hsl, #FFF3E0, #E0E0E0); /* material orange 50 + grey 300 */
+ --primary-text: #3E2723; /* material brown 900 */
+
+ background: var(--primary-background);
+ color: var(--primary-text);
+ font-size: 1.3rem;
+}
+
+.stack-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.marginless {
+  margin: 0px;
+}
