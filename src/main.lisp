@@ -1,8 +1,8 @@
-(defpackage simplr.templates
-  (:use :cl :ten)
-  (:export load-templates))
-(in-package simplr.templates)
-(defun load-templates ()
+(eval-when (:compile-toplevel)
+  (defpackage simplr.templates
+    (:use :cl :ten)
+    (:export load-templates))
+  (in-package simplr.templates)
   (ten:compile-template #p"src/index.html" :simplr.templates))
 
 (defpackage simplr
@@ -18,7 +18,6 @@
     `(200 () (,(templates:index.html)))))
 
 (defun start ()
-  (templates:load-templates)
   (clack:clackup
     (lack:builder
       (:static :path "/static/"
