@@ -6,8 +6,9 @@
   :author "Abhinav Krishna"
   :homepage "https://github.com/cadrgtsecond/simplr"
 
-  :depends-on (mito clack ningle ten)
+  :depends-on (mito clack ningle ten cmark iterate str)
   :components
   ((:module "src"
     :components
-    ((:file "main")))))
+    ((:file "model")
+     (:file "main")))))
