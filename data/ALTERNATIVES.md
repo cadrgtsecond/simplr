@@ -3,6 +3,11 @@ This is the markdown file that contains all of the actual information. Each leve
 
 Just read the rest of the file
 
+## react
+frontend:only
+
+React: The original declarative UI library
+
 ## htmx
 frontend:only backend:only
 
