@@ -1,10 +1,12 @@
 (defpackage simplr.query
-  (:use :cl :sxql))
+  (:use :cl :sxql)
+  (:export get-alternatives))
 (in-package simplr.query)
 
 ;;; Gods of Prolog, Save us
 (defun get-alternatives (stack q)
   (select ((:as :software.name :alt)
+           (:as :software.desc :desc)
            (:as (:sum :strength.strength) :total_strength))
     (from :software)
     (inner-join (:as :software_strength :strength)

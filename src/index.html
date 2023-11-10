@@ -1,3 +1,16 @@
+{% template search-results () (results) %}
+{% loop for (software . alternatives) in results do %}
+<details open="true" class="search-result">
+  <summary>{{ software }}</summary>
+  <ul>
+  {% loop for alt in alternatives do %}
+    <li>{{ alt.total-strength }}: {{ alt.desc }}</li>
+  {% end %}
+  </ul>
+</details>
+{% end %}
+{% end %}
+
 {% template index.html () () %}
 <!doctype HTML>
 <html>
@@ -6,13 +19,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="/static/index.css"/>
     <script src="/static/index.js" defer></script>
+
+    <script src="https://unpkg.com/htmx.org@1.9.8"
+            integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
+            crossorigin="anonymous"></script>
   </head>
   <body>
     <h1>Simplr.</h1>
-    <form class="stack-form">
+    <form class="stack-form"
+          hx-get="/query"
+          hx-target="#search-results"
+          hx-swap="innerHTML swap:200ms">
       <p class="marginless">What are you building?</p>
 
-      <label><input type="checkbox" name="app_web" js-expandnext/>A Web App</label>
+      <label><input type="checkbox" js-expandnext/>A Web App</label>
       <fieldset>
         <legend>Is it a?</legend>
         <label><input type="checkbox" name="app_web_frontend">Frontend app</label>
@@ -22,8 +42,10 @@
       <label><input type="checkbox" name="app_mobile"/>A Mobile App</label>
       <label><input type="checkbox" name="app_native"/>A Native App</label>
       <br/>
-      <label>Describe your stack: <input name="stack"/></label>
+      <input name="stack" class="stack-form__input" placeholder="Describe your stack..."/>
     </form>
+    <div id="search-results">
+    </div>
   </body>
 </html>
 {% end %}
