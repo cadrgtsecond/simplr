@@ -1,7 +1,6 @@
-(eval-when (:compile-toplevel)
+(eval-when (:compile-toplevel :load-toplevel)
   (defpackage simplr.templates
-    (:use :cl :ten)
-    (:export load-templates))
+    (:use :cl :ten))
   (in-package simplr.templates)
   (ten:compile-template #p"src/index.html" :simplr.templates))
 
