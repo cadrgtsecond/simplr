@@ -11,4 +11,5 @@
   ((:module "src"
     :components
     ((:file "model")
+     (:file "query")
      (:file "main")))))

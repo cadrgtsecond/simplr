@@ -6,14 +6,14 @@ Just read the rest of the file
 ## react
 frontend:only
 
-React: The original declarative UI library
+React: THE declarative UI library
 
 ## htmx
-frontend:only backend:only
+frontend:only backend:only react:+40 graphql:-100
 
 HTMX: An extension of HTML as a hypermedia to build modern web apps with the simplicity of hypermedia
 
 ## svelte
-frontend:only
+frontend:only react:+20 graphql:+10
 
 Svelte: Cybernetically enhanced web apps with a compact, simple, and complete Javascript framework(that even handles css!)

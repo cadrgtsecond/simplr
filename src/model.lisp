@@ -26,9 +26,9 @@
 
 (mito:deftable software-strength ()
   ((software :col-type software)
-   (against :col-type (:varchar 64))
+   (with :col-type (:varchar 64))
    (strength :col-type :integer))
-(:primary-key software against))
+(:primary-key software with))
 
 (mito:deftable software-platform ()
   ((software :col-type software)
@@ -52,7 +52,7 @@
 
             (mito:create-dao 'software-strength
               :software id
-              :requires key
+              :with key
               :strength (parse-integer value))))
     (dbi:execute (dbi:prepare mito:*connection* "commit transaction"))))
 
