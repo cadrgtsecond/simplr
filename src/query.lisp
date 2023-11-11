@@ -7,21 +7,24 @@
 (defun get-alternatives (stack q)
   (select ((:as :software.name :alt)
            (:as :software.desc :desc)
-           (:as (:sum :strength.strength) :total_strength))
+           (:as (:+ (:coalesce (:sum :strength.strength) 0) :initial_strength.strength) :score))
     (from :software)
-    (inner-join (:as :software_strength :strength)
+    (left-join :strength
                 :on (:and (:= :strength.software_name :alt)
                           (:in :strength.with stack)))
-    (inner-join (:as :software_platform :platform)
-                :on (:= :alt :platform.software_name))
+    (inner-join :platform
+                :on (:= :platform.software_name :alt))
+    (inner-join :initial_strength
+                :on (:= :initial_strength.software_name :alt))
 
     (where (:in :platform.platform
-                (select :platform
-                  (from :software_platform)
-                  (where (:= :software_name q)))))
+             (select :platform
+               (from :platform)
+               (where (:= :software_name q)))))
     (group-by :alt)
-    (order-by (:desc :total_strength))
-    (limit 10)))
+    (order-by (:desc :score))
+    (limit 10)
+    (having (:> :score 0))))
 
 #+nil
 (mito:retrieve-by-sql (get-alternatives '("react" "graphql") "react"))

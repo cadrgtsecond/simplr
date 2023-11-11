@@ -19,8 +19,9 @@ exec ros -Q -- $0 "$@"
   (declare (ignorable argv))
   (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
   (mito:ensure-table-exists 'simplr.model::software)
-  (mito:ensure-table-exists 'simplr.model::software-strength)
-  (mito:ensure-table-exists 'simplr.model::software-platform)
+  (mito:ensure-table-exists 'simplr.model::initial-strength)
+  (mito:ensure-table-exists 'simplr.model::strength)
+  (mito:ensure-table-exists 'simplr.model::platform)
   (simplr.model::add-markdown-tree (simplr.model::load-markdown))
 
   (setf *handle* (simplr::start :address "0.0.0.0" :port 5000 :server :woo :use-thread nil)))

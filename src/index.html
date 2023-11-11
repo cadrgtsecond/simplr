@@ -4,7 +4,7 @@
   <summary>{{ software }}</summary>
   <ul>
   {% loop for alt in alternatives do %}
-    <li>{{ alt.total-strength }}: {{ alt.desc }}</li>
+    <li>{{ alt.score }}: {{ alt.desc }}</li>
   {% end %}
   </ul>
 </details>
@@ -42,7 +42,11 @@
       <label><input type="checkbox" name="app_mobile"/>A Mobile App</label>
       <label><input type="checkbox" name="app_native"/>A Native App</label>
       <br/>
-      <input name="stack" class="stack-form__input" placeholder="Describe your stack..."/>
+      <label class="stack-form__input-label">
+        Describe your stack... e.g <code>react express</code> (Case sensitive!)
+        <br/>
+        <input name="stack" class="stack-form__input"/>
+      </label>
     </form>
     <div id="search-results">
     </div>

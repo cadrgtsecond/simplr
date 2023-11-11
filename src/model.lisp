@@ -24,36 +24,54 @@
          :primary-key t)
    (desc :col-type :text)))
 
-(mito:deftable software-strength ()
+(mito:deftable strength ()
   ((software :col-type software)
    (with :col-type (:varchar 64))
    (strength :col-type :integer))
 (:primary-key software with))
 
-(mito:deftable software-platform ()
+(mito:deftable initial-strength ()
+  ((software :col-type software
+             :primary-key t)
+   (strength :col-type :integer)))
+
+(mito:deftable platform ()
   ((software :col-type software)
    (platform :col-type (:varchar 64)))
 (:primary-key software platform))
 
+#+nil
+(progn
+  (mito:ensure-table-exists 'software)
+  (mito:ensure-table-exists 'strength)
+  (mito:ensure-table-exists 'initial-strength)
+  (mito:ensure-table-exists 'platform))
+
 (defun add-software (&key name desc opts)
   "Adds a single technology to the database"
+  ;; TODO: Mixing of different abstraction levels...
   (dbi:execute (dbi:prepare mito:*connection* "begin transaction"))
+
   (handler-bind ((t (lambda (e)
                       (format t "~a" e)
                       (dbi:execute (dbi:prepare mito:*connection* "rollback transaction")))))
 
     (iter (with id = (mito:create-dao 'software :name name :desc desc))
-
           (for (key . value) in opts)
-          (if (string= value "only")
-            (mito:create-dao 'software-platform
-              :software id
-              :platform key)
-
-            (mito:create-dao 'software-strength
-              :software id
-              :with key
-              :strength (parse-integer value))))
+          (cond
+            ((string= value "only")
+              (mito:create-dao 'platform
+                :software id
+                :platform key))
+            ((string= key "self")
+              (mito:create-dao 'initial-strength
+                :software id
+                :strength (parse-integer value)))
+            (t
+              (mito:create-dao 'strength
+                :software id
+                :with key
+                :strength (parse-integer value)))))
     (dbi:execute (dbi:prepare mito:*connection* "commit transaction"))))
 
 (defun node-text (node)
