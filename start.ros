@@ -1,0 +1,27 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp(ql:quickload '() :silent t)
+  (load "simplr.asd")
+  (ql:quickload :simplr)
+  )
+
+(defpackage :ros.script.start.3908620772
+  (:use :cl))
+(in-package :ros.script.start.3908620772)
+
+(defvar *handle*)
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
+  (mito:ensure-table-exists 'simplr.model::software)
+  (mito:ensure-table-exists 'simplr.model::software-strength)
+  (mito:ensure-table-exists 'simplr.model::software-platform)
+  (simplr.model::add-markdown-tree (simplr.model::load-markdown))
+
+  (setf *handle* (simplr::start :address "0.0.0.0" :port 5000 :server :woo :use-thread nil)))
+;;; vim: set ft=lisp lisp:

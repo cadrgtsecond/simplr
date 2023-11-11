@@ -31,13 +31,14 @@
                                          (query:get-alternatives (append asked query) q)))))))
     `(200 () (,(templates:search-results res))))))
 
-(defun start ()
-  (clack:clackup
+(defun start (&rest opts)
+  (apply #'clack:clackup
     (lack:builder
       (:static :path "/static/"
                :root #p"static/")
       :backtrace
-      *app*)))
+      *app*)
+    opts))
 
 #+nil
 (progn

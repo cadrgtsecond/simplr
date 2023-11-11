@@ -1,4 +1,6 @@
 # Simplr
+The live link is at [simplr.fly.dev](https://simplr.fly.dev)
+
 A website to find simpler alternative to popular projects
 
 Our technology stacks are getting exceedingly complex. We are using either absurdly overpowered, pointlessly bleeding-edge technologies when simpler alternatives exist already. This is a website that provides people with simpler alternatives to common technologies we use.

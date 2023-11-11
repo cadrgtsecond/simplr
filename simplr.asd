@@ -2,7 +2,7 @@
 
 (defsystem "simplr"
   :description "A website to simplify your tech stack"
-  :version "0.0.1"
+  :version "0.1.0"
   :author "Abhinav Krishna"
   :homepage "https://github.com/cadrgtsecond/simplr"
 
