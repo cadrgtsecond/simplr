@@ -5,6 +5,8 @@ A website to find simpler alternative to popular projects
 
 Our technology stacks are getting exceedingly complex. We are using either absurdly overpowered, pointlessly bleeding-edge technologies when simpler alternatives exist already. This is a website that provides people with simpler alternatives to common technologies we use.
 
+> NOTE: All data is stored in [data/ALTERNATIVES.md](data/ALTERNATIVES.md). It is currently quite limited. If you wish to extend it, please send a pull request!
+
 ## Rationale
 Abolish the Cargo Cult. Do not overengineer. Keep it simple
 
@@ -30,4 +32,10 @@ x Stripe
 Initially, it will show you all alternatives but you can select what is absolutely necessary and what even you think is pointless and it will adjust the results
 
 ## The tech stack of THIS website
-The website is written in Common Lisp. Lisp is basically 7 functions handed down to John McCarthy by Aliens. The database is SQLite since it removes the need for a seperate database system and since the database is basically Read-Only(something SQLite excels at).
+The website is written in Common Lisp. Lisp is basically 7 functions handed down to John McCarthy by Aliens. The database is SQLite since it removes the need for a seperate database system. The database isn't updated at all and is only used to query the data(Stored in data/ALTERNATIVES.md) efficiently. For this avoiding a round trip to the database as SQLite is embedded is the best option
+
+## TODO:
+- Use Nix for reproducibility instead of Docker
+- Add active search
+- Make UI more friendly
+- Add more technologies
