@@ -5,6 +5,7 @@
 
 ;;; Gods of Prolog, Save us
 (defun get-alternatives (stack q)
+  "Returns a query of the list of alternatives"
   (select ((:as :software.name :alt)
            (:as :software.desc :desc)
            (:as (:+ (:coalesce (:sum :strength.strength) 0) :initial_strength.strength) :score))

@@ -11,5 +11,6 @@
   ((:module "src"
     :components
     ((:file "model")
-     (:file "query")
+     (:file "parse-md" :depends-on ("model"))
+     (:file "query" :depends-on ("model"))
      (:file "main")))))

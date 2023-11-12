@@ -1,44 +1,33 @@
 (defpackage simplr.model
   (:use :cl :iterate))
 (in-package :simplr.model)
-
-;;; Taken from the docs for cl-cmark
-(defun print-node (node &optional (level 0))
-  "Recursively print each node and its children at progressively deeper
-  levels. Useful for debugging"
-  (format t "~&~A~A"
-          (make-string (* 2 level) :initial-element #\Space)
-          (class-name (class-of node)))
-  (dolist (child (cmark:node-children node))
-    (print-node child (1+ level))))
-
-(defun load-markdown (&optional (path #p"data/ALTERNATIVES.md"))
-  (with-open-file (s path :direction :input)
-    (cmark:parse-stream s)))
-
 #+nil
 (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
 
 (mito:deftable software ()
   ((name :col-type (:varchar 64)
          :primary-key t)
-   (desc :col-type :text)))
+   (desc :col-type :text))
+(:documentation "Table for software and descriptions"))
 
 (mito:deftable strength ()
   ((software :col-type software)
    (with :col-type (:varchar 64))
    (strength :col-type :integer))
-(:primary-key software with))
+(:primary-key software with)
+(:documentation "Table for the strengths of a technology with other technologies"))
 
 (mito:deftable initial-strength ()
   ((software :col-type software
              :primary-key t)
-   (strength :col-type :integer)))
+   (strength :col-type :integer))
+(:documentation "Table for storing initial(`self`) scores"))
 
 (mito:deftable platform ()
   ((software :col-type software)
    (platform :col-type (:varchar 64)))
-(:primary-key software platform))
+(:primary-key software platform)
+(:documentation "Table for the platforms of a technology"))
 
 #+nil
 (progn
@@ -52,47 +41,3 @@
   ;; TODO: Mixing of different abstraction levels...
   (dbi:execute (dbi:prepare mito:*connection* "begin transaction"))
 
-  (handler-bind ((t (lambda (e)
-                      (format t "~a" e)
-                      (dbi:execute (dbi:prepare mito:*connection* "rollback transaction")))))
-
-    (iter (with id = (mito:create-dao 'software :name name :desc desc))
-          (for (key . value) in opts)
-          (cond
-            ((string= value "only")
-              (mito:create-dao 'platform
-                :software id
-                :platform key))
-            ((string= key "self")
-              (mito:create-dao 'initial-strength
-                :software id
-                :strength (parse-integer value)))
-            (t
-              (mito:create-dao 'strength
-                :software id
-                :with key
-                :strength (parse-integer value)))))
-    (dbi:execute (dbi:prepare mito:*connection* "commit transaction"))))
-
-(defun node-text (node)
-  "Gets the text value stored at a node. Quite useful"
-  (if (typep node 'cmark:text-node)
-    (cmark:node-literal node)
-    (node-text (car (cmark:node-children node)))))
-
-(defun parse-opts (s)
-  (iter (for part in (str:split " " s :omit-nulls t))
-        (for (key value) = (str:split ":" part))
-        (collect (cons key value))))
-
-(defun add-markdown-tree (tree)
-  "Adds a whole tree of markdown to the database"
-  (iter (for parts on (cmark:node-children tree))
-        (for curr = (first parts))
-        (when (and (typep curr 'cmark:heading-node) (eql 2 (cmark:node-heading-level curr)))
-          (add-software
-              :name (node-text curr)
-              :opts (parse-opts (node-text (second parts)))
-              :desc (node-text (third parts))))))
-#+nil
-(add-markdown-tree (load-markdown))
