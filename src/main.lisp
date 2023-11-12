@@ -31,10 +31,12 @@
 (setf (ningle:route *app* "/completion" :method :GET)
   (lambda (params)
     (let* ((stack (cdr (assoc "stack" params :test #'string=)))
+           (words (str:split " " stack :omit-nulls t))
            (qword (car (or
-                         (last (str:split " " stack :omit-nulls t))
-                         '("")))))
-      `(200 () (,(templates:completions (query:get-completions qword)))))))
+                         (last words)
+                         '(""))))
+           (inputrest (str:join " " (butlast words))))
+      `(200 () (,(templates:completions inputrest (query:get-completions qword)))))))
 
 (defun start (&rest opts)
   (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
