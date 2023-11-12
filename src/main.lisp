@@ -18,9 +18,16 @@
     (declare (ignore params))
     `(200 () (,(templates:index.html)))))
 
+(defparameter *delimiter-regex* "[\\s,;]+")
+
+(defun split-words (query)
+  "Splits a query into multiple words.
+e.g \"react express,  node\" => (\"react\" \"express\" \"node\")"
+  (ppcre:split *delimiter-regex* query))
+
 (setf (ningle:route *app* "/query" :method :GET)
   (lambda (params)
-    (let* ((asked (str:split " " (cdr (assoc "stack" params :test #'string=)) :omit-nulls t))
+    (let* ((asked (split-words (cdr (assoc "stack" params :test #'string=))))
            (platform (iter (for (key . val) in params)
                            (declare (ignorable val))
                            (unless (string= key "stack")
@@ -30,12 +37,13 @@
 
 (setf (ningle:route *app* "/completion" :method :GET)
   (lambda (params)
+    ;; Very unlispy, not sure how to clean it though
     (let* ((stack (cdr (assoc "stack" params :test #'string=)))
-           (words (str:split " " stack :omit-nulls t))
-           (qword (car (or
-                         (last words)
-                         '(""))))
-           (inputrest (str:join " " (butlast words))))
+           (rev (reverse stack))
+           (n (length stack))
+           (splitpoint (- n (or (ppcre:scan *delimiter-regex* rev) n)))
+           (inputrest (subseq stack 0 splitpoint))
+           (qword (subseq stack splitpoint)))
       `(200 () (,(templates:completions inputrest (query:get-completions qword)))))))
 
 (defun start (&rest opts)
