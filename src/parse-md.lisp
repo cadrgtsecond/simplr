@@ -19,7 +19,7 @@
   (with-open-file (s path :direction :input)
     (cmark:parse-stream s)))
 
-(defun add-software (&key name desc opts)
+(defun add-technology (&key name desc opts)
   "Adds a single technology to the database"
   ;; TODO: Mixing of different abstraction levels...
   (dbi:execute (dbi:prepare mito:*connection* "begin transaction"))
@@ -28,20 +28,20 @@
                       (format t "~a" e)
                       (dbi:execute (dbi:prepare mito:*connection* "rollback transaction")))))
 
-    (iter (with id = (mito:create-dao 'model:software :name name :desc desc))
+    (iter (with id = (mito:create-dao 'model:technology :name name :desc desc))
           (for (key . value) in opts)
           (cond
             ((string= value "only")
               (mito:create-dao 'model:platform
-                :software id
+                :tech id
                 :platform key))
             ((string= key "self")
               (mito:create-dao 'model:initial-strength
-                :software id
+                :tech id
                 :strength (parse-integer value)))
             (t
               (mito:create-dao 'model:strength
-                :software id
+                :tech id
                 :with key
                 :strength (parse-integer value)))))
     (dbi:execute (dbi:prepare mito:*connection* "commit transaction"))))
@@ -63,7 +63,7 @@
   (iter (for parts on (cmark:node-children tree))
         (for curr = (first parts))
         (when (and (typep curr 'cmark:heading-node) (eql 2 (cmark:node-heading-level curr)))
-          (add-software
+          (add-technology
               :name (node-text curr)
               :opts (parse-opts (node-text (second parts)))
               :desc (node-text (third parts))))))

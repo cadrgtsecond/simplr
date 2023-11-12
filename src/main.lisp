@@ -6,8 +6,9 @@
 
 (defpackage simplr
   (:use :cl :iter)
-  (:local-nicknames (:templates simplr.templates)
-                    (:query simplr.query)))
+  (:local-nicknames (:model simplr.model)
+                    (:query simplr.query)
+                    (:templates simplr.templates)))
 (in-package simplr)
 
 (defvar *app* (make-instance 'ningle:app))
@@ -32,13 +33,16 @@
     `(200 () (,(templates:search-results res))))))
 
 (defun start (&rest opts)
-  (apply #'clack:clackup
-    (lack:builder
-      (:static :path "/static/"
-               :root #p"static/")
-      :backtrace
-      *app*)
-    opts))
+  (let ((mito:*connection* (dbi:connect-cached :sqlite3 :database-name #p"db.sqlite3")))
+    (unwind-protect
+      (apply #'clack:clackup
+        (lack:builder
+          (:static :path "/static/"
+                   :root #p"static/")
+          :backtrace
+          *app*)
+        opts))
+      (dbi:disconnect mito:*connection*)))
 
 #+nil
 (progn
