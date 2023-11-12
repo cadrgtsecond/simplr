@@ -25,7 +25,6 @@
   (dbi:execute (dbi:prepare mito:*connection* "begin transaction"))
 
   (handler-bind ((t (lambda (e)
-                      (format t "~a" e)
                       (dbi:execute (dbi:prepare mito:*connection* "rollback transaction")))))
 
     (iter (with id = (mito:create-dao 'model:technology :name name :desc desc))

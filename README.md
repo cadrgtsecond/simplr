@@ -36,6 +36,6 @@ The website is written in Common Lisp. Lisp is basically 7 functions handed down
 
 ## TODO:
 - Use Nix for reproducibility instead of Docker
-- Add active search
+- Improve active search
 - Make UI more friendly
 - Add more technologies

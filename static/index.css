@@ -4,6 +4,7 @@
 
 body {
  --primary-background: color-mix(in hsl, #FFF3E0, #E0E0E0); /* material orange 50 + grey 300 */
+ --secondary-background: #FAFAFA; /* material grey 50 */
  --primary-text: #3E2723; /* material brown 900 */
 
  background: var(--primary-background);
@@ -39,13 +40,20 @@ code {
   margin-top: 0.5rem;
 }
 
+#search-results.completion-results {
+  background: var(--secondary-background);
+  border-radius: 0rem 0rem 1rem 1rem;
+  margin-top: 0.3rem;
+  padding-left: 0.5rem;
+  list-style: none;
+}
 
-#search-results {
+#search-results.search-answers {
   clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 100%);
   transition: clip-path 30ms linear;
 }
 
-#search-results.htmx-swapping {
+#search-results.search-answers.htmx-swapping {
   overflow: hidden;
   clip-path: polygon(0 0, 100% 0%, 100% 0, 0 0);
 }

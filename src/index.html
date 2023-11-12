@@ -1,14 +1,25 @@
-{% template search-results () (results) %}
-{% loop for (software . alternatives) in results do %}
-<details open="true" class="search-result">
-  <summary>{{ software }}</summary>
-  <ul>
-  {% loop for alt in alternatives do %}
-    <li>{{ alt.score }}: {{ alt.desc }}</li>
-  {% end %}
-  </ul>
-</details>
+{% template completions () (results) %}
+<ul id="search-results" class="completion-results">
+{% loop for r in results do %}
+  <li data-id="{{ r.name }}">{{ r.desc }}</li>
+  <hr/>
 {% end %}
+</ul>
+{% end %}
+
+{% template search-results () (results) %}
+<div id="search-results" class="search-answers">
+{% loop for (software . alternatives) in results do %}
+  <details open="true">
+    <summary>{{ software }}</summary>
+    <ul>
+    {% loop for alt in alternatives do %}
+      <li>{{ alt.score }}: {{ alt.desc }}</li>
+    {% end %}
+    </ul>
+  </details>
+{% end %}
+</div>
 {% end %}
 
 {% template index.html () () %}
@@ -29,7 +40,7 @@
     <form class="stack-form"
           hx-get="/query"
           hx-target="#search-results"
-          hx-swap="innerHTML swap:200ms">
+          hx-swap="outerHTML swap:200ms">
       <p class="marginless">What are you building?</p>
 
       <label><input type="checkbox" js-expandnext/>A Web App</label>
@@ -45,11 +56,15 @@
       <label class="stack-form__input-label">
         Describe your stack... e.g <code>react express</code> (Case sensitive!)
         <br/>
-        <input name="stack" class="stack-form__input"/>
+        <input name="stack"
+               class="stack-form__input"
+               hx-get="/completion"
+               hx-trigger="input changed delay:200ms"
+               hx-target="#search-results"
+               hx-swap="outerHTML"/>
       </label>
     </form>
-    <div id="search-results">
-    </div>
+    <div id="search-results"></div>
   </body>
 </html>
 {% end %}

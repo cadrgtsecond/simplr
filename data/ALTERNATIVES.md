@@ -18,11 +18,9 @@ The second paragraph is `Stylized name: long description...`(Currently the styli
 Just read the rest of the file
 
 ## react
-frontend:only self:-100
+frontend:only self:-20
 
-.. No desc ..
-
-This should not show up due to the negative score
+React: The library for web and native user interfaces
 
 ## htmx
 frontend:only backend:only self:+80 graphql:-40
@@ -40,11 +38,9 @@ api:only self:+20
 GraphQL: GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.
 
 ## c
-native:only self:-100
+native:only self:-20
 
-.. No desc ..
-
-This should not show up due to the negative score
+C: The most popular low-level programming language
 
 ## rust
 native:only self:+65 very-low-level:-20

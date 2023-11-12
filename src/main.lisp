@@ -21,28 +21,34 @@
 (setf (ningle:route *app* "/query" :method :GET)
   (lambda (params)
     (let* ((asked (str:split " " (cdr (assoc "stack" params :test #'string=)) :omit-nulls t))
-           (query (iter (for (key . val) in params)
-                        (declare (ignorable val))
-                        (unless (string= key "stack")
-                          (collect key))))
-           ;; TODO: Avoid n+1 query
-           ;; Actually not THAT bad since we use Sqlite
-           (res (iter (for q in asked)
-                      (collect (cons q (mito:retrieve-by-sql
-                                         (query:get-alternatives (append asked query) q)))))))
-    `(200 () (,(templates:search-results res))))))
+           (platform (iter (for (key . val) in params)
+                           (declare (ignorable val))
+                           (unless (string= key "stack")
+                             (collect key)))))
+    `(200 () (,(templates:search-results
+                  (query:get-alternatives (append asked platform) asked)))))))
+
+(setf (ningle:route *app* "/completion" :method :GET)
+  (lambda (params)
+    (let* ((stack (cdr (assoc "stack" params :test #'string=)))
+           (qword (car (or
+                         (last (str:split " " stack :omit-nulls t))
+                         '("")))))
+      `(200 () (,(templates:completions (query:get-completions qword)))))))
 
 (defun start (&rest opts)
-  (let ((mito:*connection* (dbi:connect-cached :sqlite3 :database-name #p"db.sqlite3")))
-    (unwind-protect
-      (apply #'clack:clackup
-        (lack:builder
-          (:static :path "/static/"
-                   :root #p"static/")
-          :backtrace
-          *app*)
-        opts))
-      (dbi:disconnect mito:*connection*)))
+  (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
+  (dolist (tb model:*tables*)
+    (mito:ensure-table-exists tb))
+  (simplr.parse-md::add-markdown-tree (simplr.parse-md::load-markdown))
+
+  (apply #'clack:clackup
+    (lack:builder
+      (:static :path "/static/"
+               :root #p"static/")
+      :backtrace
+      *app*)
+    opts))
 
 #+nil
 (progn

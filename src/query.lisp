@@ -1,10 +1,11 @@
 (defpackage simplr.query
   (:use :cl :sxql)
-  (:export get-alternatives))
+  (:export get-alternatives get-completions)
+  (:local-nicknames (:model simplr.model)))
 (in-package simplr.query)
 
 ;;; Gods of Prolog, Save us
-(defun get-alternatives (stack q)
+(defun select-alternatives (stack q)
   "Returns a query of the list of alternatives"
   (select ((:as :technology.name :alt)
            (:as :technology.desc :desc)
@@ -27,5 +28,21 @@
     (limit 10)
     (having (:> :score 0))))
 
+(defun get-alternatives (stack query)
+  ;; TODO: Avoid n query
+  ;; Actually not THAT bad since we use Sqlite
+  (mapcar (lambda (q)
+            (cons q (mito:retrieve-by-sql
+                      (select-alternatives stack q))))
+           query))
+
 #+nil
 (mito:retrieve-by-sql (get-alternatives '("react" "graphql") "react"))
+
+(defun get-completions (w)
+  (mito:select-dao 'model:technology
+    (where (:like :name (:concat w "%")))
+    (limit 10)))
+
+#+nil
+(get-completions "r")

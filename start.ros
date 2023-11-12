@@ -16,12 +16,5 @@ exec ros -Q -- $0 "$@"
 (defvar *handle*)
 (defun main (&rest argv)
   (declare (ignorable argv))
-
-  (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
-  (dolist (tb model:*tables*)
-    (mito:ensure-table-exists tb))
-
-  (simplr.parse-md::add-markdown-tree (simplr.parse-md::load-markdown))
-
   (setf *handle* (start :address "0.0.0.0" :port 5000 :server :woo :use-thread nil)))
 ;;; vim: set ft=lisp lisp:
