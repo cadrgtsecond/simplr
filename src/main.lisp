@@ -8,7 +8,8 @@
   (:use :cl :iter)
   (:local-nicknames (:model simplr.model)
                     (:query simplr.query)
-                    (:templates simplr.templates)))
+                    (:templates simplr.templates)
+                    (:parse-md simplr.parse-md)))
 (in-package simplr)
 
 (defvar *app* (make-instance 'ningle:app))

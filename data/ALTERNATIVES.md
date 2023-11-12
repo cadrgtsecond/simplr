@@ -13,41 +13,43 @@ To set an initial score, add `self:initialScore` to the strengths eg. `#vite sel
 
 > NOTE: This is just a regular integer(parsed with `parse-integer`) so you could also write `react:20` but always use a `+` for readability
 
-The second paragraph is `Stylized name: long description...`(Currently the stylized name is just added to the description). Then it is followed by a list of reasons `- reason -- options`(Not implemented yet)
+The second paragraph is the description. Then it is followed by a list of reasons `- reason -- options`(Not implemented yet)
+
+> NOTE: Do not use spaces in headings. They are *recognised* but you wouldn't be able to search for them
 
 Just read the rest of the file
 
-## react
+## React
 frontend:only self:-20
 
 React: The library for web and native user interfaces
 
-## htmx
+## Htmx
 frontend:only backend:only self:+80 graphql:-40
 
-HTMX: An extension of HTML as a hypermedia to build modern web apps with the simplicity of hypermedia
+An extension of HTML as a hypermedia to build modern web apps with the simplicity of hypermedia
 
-## svelte
+## Svelte
 frontend:only self:+40 graphql:+10
 
-Svelte: Cybernetically enhanced web apps with a compact, simple, and complete Javascript framework(that even handles css!)
+Cybernetically enhanced web apps with a compact, simple, and complete Javascript framework(that even handles css!)
 
-## graphql
+## GraphQL
 api:only self:+20
 
-GraphQL: GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.
+GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.
 
-## c
+## C
 native:only self:-20
 
-C: The most popular low-level programming language
+The most popular low-level programming language
 
-## rust
+## Rust
 native:only self:+65 very-low-level:-20
 
-Rust: A language empowering everyone to build reliable and efficient software.
+A language empowering everyone to build reliable and efficient software.
 
-## zig
+## Zig
 native:only self:+60
 
-Zig: A general-purpose programming language and toolchain for maintaining robust, optimal and reusable software.
+A general-purpose programming language and toolchain for maintaining robust, optimal and reusable software.

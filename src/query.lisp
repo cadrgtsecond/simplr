@@ -9,6 +9,7 @@
   "Returns a query of the list of alternatives"
   (select ((:as :technology.name :alt)
            (:as :technology.desc :desc)
+           (:as :technology.stylized :stylized)
            (:as (:+ (:coalesce (:sum :strength.strength) 0) :initial_strength.strength) :score))
     (from :technology)
     (left-join :strength

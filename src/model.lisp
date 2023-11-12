@@ -13,6 +13,7 @@
 (mito:deftable technology ()
   ((name :col-type (:varchar 64)
          :primary-key t)
+   (stylized :col-type (:varchar 64))
    (desc :col-type :text))
 (:documentation "Table for technology and descriptions"))
 

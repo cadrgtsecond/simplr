@@ -19,15 +19,28 @@
   (with-open-file (s path :direction :input)
     (cmark:parse-stream s)))
 
-(defun add-technology (&key name desc opts)
+(defun parse-technology-body (desc)
+  (multiple-value-bind (start end) (ppcre:scan "\\s*:\\s*" desc)
+    (values
+      (subseq desc 0 start)
+      (subseq desc end))))
+#+nil
+(parse-technology-body "HTMX : A hypermedia ....")
+
+(defun add-technology (&key name body opts)
   "Adds a single technology to the database"
   ;; TODO: Mixing of different abstraction levels...
   (dbi:execute (dbi:prepare mito:*connection* "begin transaction"))
 
   (handler-bind ((t (lambda (e)
+                      (declare (ignore e))
                       (dbi:execute (dbi:prepare mito:*connection* "rollback transaction")))))
+    (iter (with id =
+            (mito:create-dao 'model:technology
+                             :name (string-downcase name)
+                             :stylized name
+                             :desc body))
 
-    (iter (with id = (mito:create-dao 'model:technology :name name :desc desc))
           (for (key . value) in opts)
           (cond
             ((string= value "only")
@@ -65,6 +78,6 @@
           (add-technology
               :name (node-text curr)
               :opts (parse-opts (node-text (second parts)))
-              :desc (node-text (third parts))))))
+              :body (node-text (third parts))))))
 #+nil
 (add-markdown-tree (load-markdown))

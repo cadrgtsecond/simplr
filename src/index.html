@@ -1,6 +1,6 @@
 {% template completions () (inputrest results) %}
 {% loop for r in results do %}
-  <option value="{{ inputrest }}{{ r.name }}"/>
+  <option value="{{ inputrest }}{{ r.stylized }}"/>
 {% end %}
 {% end %}
 
@@ -11,7 +11,7 @@
     <summary>{{ software }}</summary>
     <ul>
     {% loop for alt in alternatives do %}
-      <li>{{ alt.score }}: {{ alt.desc }}</li>
+      <li>{{ alt.score }} {{ alt.stylized }} - {{ alt.desc }}</li>
     {% end %}
     </ul>
   </details>
