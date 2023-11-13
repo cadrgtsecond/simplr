@@ -80,4 +80,4 @@
               :opts (parse-opts (node-text (second parts)))
               :body (node-text (third parts))))))
 #+nil
-(add-markdown-tree (load-markdown))
+(simplr::start-db)

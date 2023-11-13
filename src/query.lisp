@@ -20,10 +20,11 @@
     (inner-join :initial_strength
                 :on (:= :initial_strength.tech_name :alt))
 
-    (where (:in :platform.platform
-             (select :platform
-               (from :platform)
-               (where (:= :tech_name q)))))
+    (where (:and (:in :platform.platform
+                   (select :platform
+                     (from :platform)
+                     (where (:= :tech_name (string-downcase q)))))
+                (:!= :alt (string-downcase q))))
     (group-by :alt)
     (order-by (:desc :score))
     (limit 10)
@@ -42,8 +43,8 @@
 
 (defun get-completions (w)
   (mito:select-dao 'model:technology
-    (where (:like :name (:concat w "%")))
+    (where (:like :name (:concat (string-downcase w) "%")))
     (limit 10)))
 
 #+nil
-(get-completions "r")
+(get-completions "graph")

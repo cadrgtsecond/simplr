@@ -19,7 +19,7 @@
     (declare (ignore params))
     `(200 () (,(templates:index.html)))))
 
-(defparameter *delimiter-regex* "[\\s,;]+")
+(defparameter *delimiter-regex* "[\\W,;]+")
 
 (defun split-words (query)
   "Splits a query into multiple words.
@@ -38,20 +38,24 @@ e.g \"react express,  node\" => (\"react\" \"express\" \"node\")"
 
 (setf (ningle:route *app* "/completion" :method :GET)
   (lambda (params)
-    ;; Very unlispy, not sure how to clean it though
-    (let* ((stack (cdr (assoc "stack" params :test #'string=)))
-           (rev (reverse stack))
-           (n (length stack))
-           (splitpoint (- n (or (ppcre:scan *delimiter-regex* rev) n)))
-           (inputrest (subseq stack 0 splitpoint))
-           (qword (subseq stack splitpoint)))
-      `(200 () (,(templates:completions inputrest (query:get-completions qword)))))))
+    (let ((split (mapcar #'nreverse
+                   (ppcre:split "(?=[\\W;,])"
+                             (nreverse (cdr (assoc "stack" params :test #'string=)))
+                             :limit 2))))
+      (destructuring-bind (qword inputrest)
+           (if (eq (length split) 2)
+             split
+             `(,@split ""))
+        `(200 () (,(templates:completions inputrest (query:get-completions qword))))))))
 
-(defun start (&rest opts)
+(defun start-db ()
   (mito:connect-toplevel :sqlite3 :database-name #p"db.sqlite3")
   (dolist (tb model:*tables*)
     (mito:ensure-table-exists tb))
-  (simplr.parse-md::add-markdown-tree (simplr.parse-md::load-markdown))
+  (parse-md:add-markdown-tree (parse-md:load-markdown)))
+
+(defun start (&rest opts)
+  (start-db)
 
   (apply #'clack:clackup
     (lack:builder
