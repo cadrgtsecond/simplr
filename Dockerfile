@@ -19,7 +19,8 @@ RUN ros run <<EOF
 EOF
 
 RUN apk add clang
-RUN apk add cmark-dev libev-dev sqlite-dev libc-dev
+RUN apk add cmark-dev libev-dev libc-dev
+RUN apk add sqlite-libs>3.44.0 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
 COPY . /app
 
 EXPOSE 5000
